@@ -1,9 +1,9 @@
 import { RemoteAuthentication } from './remote-authentication'
-import { HttpPostClientSpy } from '@/data/test/mock-http-client'
-import { AuthenticationParams } from '@/domain/usecases/authentication'
-import { HttpStatusCode } from '@/data/protocols/http/http-response'
+import { HttpPostClientSpy } from '@/data/test'
+import { AuthenticationParams } from '@/domain/usecases'
+import { HttpStatusCode } from '@/data/protocols/http'
 import { UnexpectedError, InvalidCredentialsError } from '@/domain/errors'
-import { AccountModel } from '@/domain/models/AccountModel'
+import { AccountModel } from '@/domain/models'
 import faker from 'faker'
 
 const mockAuthentication = (): AuthenticationParams => ({
