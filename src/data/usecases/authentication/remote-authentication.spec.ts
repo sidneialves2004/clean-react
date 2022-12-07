@@ -11,6 +11,10 @@ const mockAuthentication = (): AuthenticationParams => ({
   password: faker.internet.password()
 })
 
+const mockAccountModel = (): AccountModel => ({
+  accessToken: faker.random.uuid()
+})
+
 type SutTypes = {
   sut: RemoteAuthentication
   httpPostClientSpy: HttpPostClientSpy<AuthenticationParams, AccountModel>
@@ -75,12 +79,14 @@ describe('RemoteAuthentication', () => {
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  test('Should throw UnexpectedError if HttpPostClient returns 404', async () => {
+  test('Should return an AccountModel if HttpPostClient returns 200', async () => {
     const { sut, httpPostClientSpy } = makeSut()
+    const httpResult = mockAccountModel()
     httpPostClientSpy.response = {
-      statusCode: HttpStatusCode.notFound
+      statusCode: HttpStatusCode.ok,
+      body: httpResult
     }
-    const promise = sut.auth(mockAuthentication())
-    await expect(promise).rejects.toThrow(new UnexpectedError())
+    const account = await sut.auth(mockAuthentication())
+    await expect(account).toEqual(httpResult)
   })
 })
