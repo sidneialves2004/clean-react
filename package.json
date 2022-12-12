@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --passWithNoTests",
+    "start": "webpack-dev-server --open",
+    "test": "jest --passWithNoTests --no-cache --runInBand",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "test:watch": "npm test -- --watch",
@@ -24,6 +25,7 @@
     "@types/react-dom": "^18.0.9",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.10.0",
+    "clean-webpack-plugin": "^4.0.0",
     "eslint": "^7.9.0",
     "eslint-config-standard-with-typescript": "^21.0.1",
     "eslint-plugin-cypress": "^2.11.1",
