@@ -817,7 +817,7 @@
 
 "@types/faker@^6.6.9":
   version "6.6.9"
-  resolved "https://registry.npmjs.org/@types/faker/-/faker-6.6.9.tgz"
+  resolved "https://registry.yarnpkg.com/@types/faker/-/faker-6.6.9.tgz#1064e7c46be58388fa326e2f918a4f02ab740a7a"
   integrity sha512-Y9YYm5L//8ooiiknO++4Gr539zzdI0j3aXnOBjo1Vk+kTvffY10GuE2wn78AFPECwZ5MYGTjiDVw1naLLdDimw==
   dependencies:
     faker "*"
