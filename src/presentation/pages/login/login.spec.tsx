@@ -1,8 +1,10 @@
 import React from 'react'
-import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
+import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
 import { AuthenticationSpy, ValidationStub } from '@/presentation/test'
 import Login from './login'
 import faker from 'faker'
+import { InvalidCredentialsError } from '@/domain/errors'
+// import { act } from 'react-dom/test-utils'
 
 type SutTypes = {
   sut: RenderResult
@@ -24,11 +26,13 @@ const makeSut = (params?: SutParams): SutTypes => {
   }
 }
 
-const simulateValidSubmit = (sut: RenderResult, email = faker.internet.email(), password = faker.internet.password()): void => {
+const simulateValidSubmit = async (sut: RenderResult, email = faker.internet.email(), password = faker.internet.password()): Promise<void> => {
   populateEmailField(sut, email)
   populatePasswordField(sut, password)
-  const submitButton = sut.getByTestId('submit') as HTMLButtonElement
+  const submitButton = sut.getByTestId('submit')
+  const form = sut.getByTestId('form')
   fireEvent.click(submitButton)
+  await waitFor(() => form)
 }
 
 const populateEmailField = (sut: RenderResult, email = faker.internet.email()): void => {
@@ -62,24 +66,6 @@ describe('Login Component', () => {
     simulateStatusForField(sut,'email', validationError)
     simulateStatusForField(sut,'password', validationError)
   })
-
-  // test('should call Validation with correct email', () => {
-  //   const { sut, validationStub } = makeSut()
-  //   const emailInput = sut.getByTestId('email')
-  //   const email = faker.internet.email()
-  //   fireEvent.input(emailInput, { target: { value: email } })
-  //   expect(validationStub.fieldName).toBe('email')
-  //   expect(validationStub.fieldValue).toBe(email)
-  // })
-
-  // test('should call Validation with correct password', () => {
-  //   const { sut, validationStub } = makeSut()
-  //   const passwordInput = sut.getByTestId('password')
-  //   const password = faker.internet.password()
-  //   fireEvent.input(passwordInput, { target: { value: password } })
-  //   expect(validationStub.fieldName).toBe('password')
-  //   expect(validationStub.fieldValue).toBe(password)
-  // })
 
   test('should show email error if Validation fails', () => {
     const validationError = faker.random.words()
@@ -115,28 +101,28 @@ describe('Login Component', () => {
     expect(submitButton.disabled).toBe(false)
   })
 
-  test('should show spinner on submit', () => {
+  test('should show spinner on submit', async () => {
     const { sut } = makeSut()
-    simulateValidSubmit(sut)
+    await simulateValidSubmit(sut)
     const spinner = sut.getByTestId('spinner')
     expect(spinner).toBeTruthy()
   })
 
-  test('should call Authentication with correct values', () => {
+  test('should call Authentication with correct values', async () => {
     const { sut, authenticationSpy } = makeSut()
     const email = faker.internet.email()
     const password = faker.internet.password()
-    simulateValidSubmit(sut, email, password)
+    await simulateValidSubmit(sut, email, password)
     expect(authenticationSpy.params).toEqual({
       email,
       password
     })
   })
 
-  test('should call Authentication only once', () => {
+  test('should call Authentication only once', async () => {
     const { sut, authenticationSpy } = makeSut()
-    simulateValidSubmit(sut)
-    simulateValidSubmit(sut)
+    await simulateValidSubmit(sut)
+    await simulateValidSubmit(sut)
     expect(authenticationSpy.callsCount).toBe(1)
   })
 
@@ -146,5 +132,16 @@ describe('Login Component', () => {
     populateEmailField(sut)
     fireEvent.submit(sut.getByTestId('form'))
     expect(authenticationSpy.callsCount).toBe(0)
+  })
+
+  test('should present error if Authentication fails', async () => {
+    const { sut, authenticationSpy } = makeSut()
+    const error = new InvalidCredentialsError()
+    jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(error))
+    const errorWrap = sut.getByTestId('error-wrap')
+    await simulateValidSubmit(sut)
+    const mainError = sut.getByTestId('main-error')
+    expect(mainError.textContent).toBe(error.message)
+    expect(errorWrap.childElementCount).toBe(1)
   })
 })
