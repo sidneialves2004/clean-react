@@ -1,4 +1,4 @@
-import { RemoteAuthentication } from './remote-authentication'
+import { RemoteAuthentication } from '@/data/usecases'
 import { HttpPostClientSpy } from '@/data/test'
 import { AuthenticationParams } from '@/domain/usecases'
 import { HttpStatusCode } from '@/data/protocols/http'
