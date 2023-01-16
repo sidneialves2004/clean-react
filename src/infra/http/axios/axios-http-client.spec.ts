@@ -1,17 +1,18 @@
-import { AxiosHttpCliente } from './axios-http-client'
+
 import { mockAxios } from '@/infra/test'
 import axios from 'axios'
 import { mockPostRequest } from '@/data/test'
+import { AxiosHttpClient } from '@/infra/http'
 
 jest.mock('axios')
 
 type SutTypes = {
-  sut: AxiosHttpCliente
+  sut: AxiosHttpClient
   mockedAxios: jest.Mocked<typeof axios>
 }
 
 const makeSut = (): SutTypes => {
-  const sut = new AxiosHttpCliente()
+  const sut = new AxiosHttpClient()
   const mockedAxios = mockAxios()
   return {
     sut,
