@@ -1,3 +1,3 @@
-export interface SaveAccessTokenn {
+export interface SaveAccessToken {
   save: (accessToken: string) => Promise<void>
 }
