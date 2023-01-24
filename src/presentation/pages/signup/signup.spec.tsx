@@ -90,4 +90,14 @@ describe('Signup Component', () => {
     Helper.populateField(sut, 'passwordConfirmation')
     Helper.testStatusForField(sut,'passwordConfirmation')
   })
+
+  test('should desabled submit buttton if form is invalid', () => {
+    const validationError = faker.random.words()
+    const { sut } = makeSut({ validationError })
+    Helper.populateField(sut, 'name')
+    Helper.populateField(sut, 'email')
+    Helper.populateField(sut, 'password')
+    Helper.populateField(sut, 'passwordConfirmation')
+    Helper.testButtonIsDisabled(sut, 'submit', true)
+  })
 })
