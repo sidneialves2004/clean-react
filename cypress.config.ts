@@ -3,7 +3,7 @@ import { defineConfig } from 'cypress'
 export default defineConfig({
   e2e: {
     fixturesFolder: false,
-    supportFile: false,
+    supportFile: './cypress/support/index.js',
     specPattern: './cypress/integration',
     baseUrl: 'http://localhost:3000',
     setupNodeEvents (on, config) {

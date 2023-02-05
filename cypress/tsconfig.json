@@ -4,5 +4,5 @@
     "lib": ["es6"],
     "types": ["cypress"]
   },
-  "include": ["**/*.ts", "../cypress.config.ts"]
+  "include": ["**/*.ts", "../cypress.config.ts", "support/index.js"]
 }
