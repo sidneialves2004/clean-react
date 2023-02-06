@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es6",
     "lib": ["es6"],
-    "types": ["cypress"]
+    "types": ["cypress"],
+    "moduleResolution": "node"
   },
   "include": ["**/*.ts", "../cypress.config.ts", "support/index.js"]
 }
