@@ -79,6 +79,27 @@ describe('Login', () => {
   //   cy.url().should('eq', `${baseUrl}/login`)
   // })
 
+  it('should present error if server returns error 400', () => {
+    cy.intercept({ method: 'POST', path: 'login' }, {
+      statusCode: 400,
+      body: {
+        error: faker.random.words()
+      }
+    }).as('returnServerError')
+
+    cy.getByTestId('email').focus().type(faker.internet.email())
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
+    cy.getByTestId('submit').click()
+    cy.getByTestId('error-wrap')
+      .getByTestId('spinner').should('exist')
+      .getByTestId('main-error').should('not.exist')
+    cy.wait('@returnServerError')
+    cy.getByTestId('error-wrap')
+    cy.getByTestId('spinner').should('not.exist')
+    cy.getByTestId('main-error').should('contain.text', 'Algo de errado aconteceu. Tente novamente mais tarde')
+    cy.url().should('eq', `${baseUrl}/login`)
+  })
+
   it('should save accessToken if valid credentials are provided', () => {
     cy.getByTestId('email').focus().type('sid44@gmail.com')
     cy.getByTestId('password').focus().type('123456')
