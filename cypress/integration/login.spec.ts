@@ -184,4 +184,20 @@ describe('Login', () => {
     cy.getByTestId('submit').dblclick()
     cy.get('@request.all').should('have.length', 1)
   })
+
+  it('should Login submit the form by clicking the enter key in a field', () => {
+    cy.intercept({ method: 'POST', path: 'login' }, {
+      statusCode: 200,
+      body: {
+        accessToken: faker.random.uuid()
+      }
+    }).as('request')
+
+    cy.getByTestId('email').focus().type(faker.internet.email())
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5)).type('{enter}')
+    cy.get('@request.all').should('have.length', 1)
+    cy.getByTestId('spinner').should('not.exist')
+    cy.url().should('eq', `${baseUrl}/`)
+    cy.window().then((window: any) => assert.isOk(window.localStorage.getItem('accessToken')))
+  })
 })
