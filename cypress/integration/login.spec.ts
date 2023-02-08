@@ -139,15 +139,35 @@ describe('Login', () => {
     cy.url().should('eq', `${baseUrl}/login`)
   })
 
-  it('should save accessToken if valid credentials are provided', () => {
-    cy.getByTestId('email').focus().type('sid44@gmail.com')
-    cy.getByTestId('password').focus().type('123456')
+  it('should save accessToken if valid credentials are provided - mocked return', () => {
+    cy.intercept({ method: 'POST', path: 'login' }, {
+      statusCode: 200,
+      body: {
+        accessToken: faker.random.uuid()
+      }
+    }).as('credentialValidates')
+
+    cy.getByTestId('email').focus().type(faker.internet.email())
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
     cy.getByTestId('submit').click()
     cy.getByTestId('error-wrap')
       .getByTestId('spinner').should('exist')
       .getByTestId('main-error').should('not.exist')
-      .getByTestId('spinner').should('not.exist')
+    cy.wait('@credentialValidates')
+    cy.getByTestId('spinner').should('not.exist')
     cy.url().should('eq', `${baseUrl}/`)
     cy.window().then((window: any) => assert.isOk(window.localStorage.getItem('accessToken')))
   })
+
+  // it('should save accessToken if valid credentials are provided', () => {
+  //   cy.getByTestId('email').focus().type('sid44@gmail.com')
+  //   cy.getByTestId('password').focus().type('123456')
+  //   cy.getByTestId('submit').click()
+  //   cy.getByTestId('error-wrap')
+  //     .getByTestId('spinner').should('exist')
+  //     .getByTestId('main-error').should('not.exist')
+  //     .getByTestId('spinner').should('not.exist')
+  //   cy.url().should('eq', `${baseUrl}/`)
+  //   cy.window().then((window: any) => assert.isOk(window.localStorage.getItem('accessToken')))
+  // })
 })
