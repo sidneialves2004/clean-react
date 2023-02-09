@@ -122,4 +122,17 @@ describe('Signup', () => {
     cy.getByTestId('submit').dblclick()
     FormHelper.testHttpCallsCount('mockOk', 1)
   })
+
+  it('should Signup submit the form by clicking the enter key in a field', () => {
+    const password = faker.random.alphaNumeric(5)
+    Http.mockOk()
+    cy.getByTestId('name').focus().type(faker.random.alphaNumeric(7))
+    cy.getByTestId('email').focus().type(faker.internet.email())
+    cy.getByTestId('password').focus().type(password).type('{enter}')
+    cy.getByTestId('passwordConfirmation').focus().type(password).type('{enter}')
+    FormHelper.testHttpCallsCount('mockOk', 1)
+    cy.getByTestId('spinner').should('not.exist')
+    FormHelper.testUrl('/')
+    FormHelper.testLocalStorageItem('accessToken')
+  })
 })
