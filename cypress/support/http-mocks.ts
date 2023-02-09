@@ -12,6 +12,18 @@ export const mockInvalidCredentialsError = (path: string): void => {
   }).as('mockInvalidCredentialsError')
 }
 
+export const mockEmailInUseError = (path: string): void => {
+  cy.intercept({
+    method: 'POST',
+    path
+  }, {
+    statusCode: 403,
+    body: {
+      error: faker.random.words()
+    }
+  }).as('mockEmailInUseError')
+}
+
 export const mockUnexpectedError = (method: string, path: string): void => {
   cy.intercept({
     method,
