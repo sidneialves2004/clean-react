@@ -26,4 +26,13 @@ describe('Input Component', () => {
     fireEvent.focus(input)
     expect(input.readOnly).toBe(false)
   })
+
+  test('should receive focus on label click', () => {
+    const field: string = faker.database.column()
+    const sut = makeSut(field)
+    const input = sut.getByTestId(field) as HTMLInputElement
+    const label = sut.getByTestId(`${field}-label`) as HTMLLabelElement
+    fireEvent.click(label)
+    expect(input.focus).toBeTruthy()
+  })
 })
