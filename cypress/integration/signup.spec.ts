@@ -1,4 +1,5 @@
 import * as FormHelper from '../support/form-helper'
+import faker from 'faker'
 
 describe('Signup', () => {
   beforeEach(() => {
@@ -14,6 +15,19 @@ describe('Signup', () => {
     cy.getByTestId('password').should('have.attr', 'readOnly')
     FormHelper.testInputStatus('passwordConfirmation', 'Campo Obrigatório')
     cy.getByTestId('passwordConfirmation').should('have.attr', 'readOnly')
+    cy.getByTestId('submit').should('have.attr', 'disabled')
+    cy.getByTestId('error-wrap').should('not.have.descendants')
+  })
+
+  it('should present error state if form is invalid', () => {
+    cy.getByTestId('name').focus().type(faker.random.alphaNumeric(3))
+    FormHelper.testInputStatus('name', 'Campo name deve ter no minimo 5 caracteres')
+    cy.getByTestId('email').focus().type(faker.random.word())
+    FormHelper.testInputStatus('email', 'Campo email inválido')
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(3))
+    FormHelper.testInputStatus('password', 'Campo password deve ter no minimo 5 caracteres')
+    cy.getByTestId('passwordConfirmation').focus().type(faker.random.alphaNumeric(4))
+    FormHelper.testInputStatus('passwordConfirmation', 'Campo passwordConfirmation inválido')
     cy.getByTestId('submit').should('have.attr', 'disabled')
     cy.getByTestId('error-wrap').should('not.have.descendants')
   })
