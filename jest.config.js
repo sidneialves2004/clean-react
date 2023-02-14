@@ -3,7 +3,6 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{ts,tsx}',
     '!<rootDir>/src/main/**/*.{ts,tsx}',
-    '!<rootDir>/src/presentation/components/router/**/*.{ts,tsx}',
     '!**/*.d.ts'
   ],
   testPathIgnorePatterns: [
