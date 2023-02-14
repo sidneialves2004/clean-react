@@ -86,7 +86,7 @@ describe('Login', () => {
     FormHelper.testUrl('/login')
   })
 
-  it('should save accessToken if valid credentials are provided - mocked return', () => {
+  it('should save account if valid credentials are provided - mocked return', () => {
     Http.mockOk()
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
@@ -97,7 +97,7 @@ describe('Login', () => {
     cy.wait('@mockOk')
     cy.getByTestId('spinner').should('not.exist')
     FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('accessToken')
+    FormHelper.testLocalStorageItem('account')
   })
 
   // it('should save accessToken if valid credentials are provided', () => {
@@ -127,7 +127,7 @@ describe('Login', () => {
     FormHelper.testHttpCallsCount('mockOk', 1)
     cy.getByTestId('spinner').should('not.exist')
     FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('accessToken')
+    FormHelper.testLocalStorageItem('account')
   })
 
   it('should not submit if form is invalid', () => {

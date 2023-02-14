@@ -5,14 +5,11 @@ import { HttpStatusCode } from '@/data/protocols/http'
 import { UnexpectedError, InvalidCredentialsError } from '@/domain/errors'
 import { AccountModel } from '@/domain/models'
 import faker from 'faker'
+import { mockAccountModel } from '@/domain/test'
 
 const mockAuthentication = (): AuthenticationParams => ({
   email: faker.internet.email(),
   password: faker.internet.password()
-})
-
-const mockAccountModel = (): AccountModel => ({
-  accessToken: faker.datatype.uuid()
 })
 
 type SutTypes = {

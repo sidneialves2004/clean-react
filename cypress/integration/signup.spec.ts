@@ -95,7 +95,7 @@ describe('Signup', () => {
     FormHelper.testUrl('/signup')
   })
 
-  it('should save accessToken if valid register', () => {
+  it('should save account if valid register', () => {
     const password = faker.random.alphaNumeric(5)
     Http.mockOk()
     cy.getByTestId('name').focus().type(faker.random.alphaNumeric(7))
@@ -109,7 +109,7 @@ describe('Signup', () => {
     cy.wait('@mockOk')
     cy.getByTestId('spinner').should('not.exist')
     FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('accessToken')
+    FormHelper.testLocalStorageItem('account')
   })
 
   it('should prevent multiple submits', () => {
@@ -133,7 +133,7 @@ describe('Signup', () => {
     FormHelper.testHttpCallsCount('mockOk', 1)
     cy.getByTestId('spinner').should('not.exist')
     FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('accessToken')
+    FormHelper.testLocalStorageItem('account')
   })
 
   it('should not submit if form is invalid', () => {
