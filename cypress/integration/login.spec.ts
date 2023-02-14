@@ -74,7 +74,7 @@ describe('Login', () => {
   })
 
   it('should present UnexpectedError if invalid data is returned', () => {
-    Http.mockInvaldData()
+    Http.mockInvaldData(1000)
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
     cy.getByTestId('submit').click()
@@ -87,7 +87,7 @@ describe('Login', () => {
   })
 
   it('should save account if valid credentials are provided - mocked return', () => {
-    Http.mockOk()
+    Http.mockOk(1000)
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
     cy.getByTestId('submit').click()

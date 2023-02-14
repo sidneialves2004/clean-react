@@ -3,5 +3,5 @@ import faker from 'faker'
 
 export const mockInvalidCredentialsError = (): void => Helper.mockInvalidCredentialsError('login')
 export const mockUnexpectedError = (): void => Helper.mockUnexpectedError('POST', 'login')
-export const mockOk = (): void => Helper.mockOk('POST', 'login', { accessToken: faker.random.uuid(), name: faker.name.findName() })
-export const mockInvaldData = (): void => Helper.mockOk('POST', 'login', { invalidProperty: faker.random.uuid() })
+export const mockOk = (delay?: number): void => Helper.mockOk('POST', 'login', { accessToken: faker.random.uuid(), name: faker.name.findName() }, delay)
+export const mockInvaldData = (delay?: number): void => Helper.mockOk('POST', 'login', { invalidProperty: faker.random.uuid() }, delay)

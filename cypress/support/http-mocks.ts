@@ -36,11 +36,12 @@ export const mockUnexpectedError = (method: string, path: string): void => {
   }).as('mockUnexpectedError')
 }
 
-export const mockOk = (method: string, path: string, body: any): void => {
+export const mockOk = (method: string, path: string, body: any,delay?: number): void => {
   cy.intercept({
     method,
     path
   }, {
+    delay,
     statusCode: 200,
     body
   }).as('mockOk')

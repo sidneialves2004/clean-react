@@ -97,7 +97,7 @@ describe('Signup', () => {
 
   it('should save account if valid register', () => {
     const password = faker.random.alphaNumeric(5)
-    Http.mockOk()
+    Http.mockOk(1000)
     cy.getByTestId('name').focus().type(faker.random.alphaNumeric(7))
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(password)
