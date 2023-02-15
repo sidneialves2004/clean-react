@@ -1,6 +1,5 @@
-import { SetStorage } from '@/data/protocols/cache'
 import { LocalStorageAdapter } from '@/infra/cache'
 
-export const makeLocalstorageAdapter = (): SetStorage => {
+export const makeLocalstorageAdapter = (): LocalStorageAdapter => {
   return new LocalStorageAdapter()
 }
