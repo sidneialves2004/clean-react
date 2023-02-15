@@ -1,2 +1,2 @@
 /* istanbul ignore file */
-export * from './local-storage.adapter'
+export * from './local-storage-adapter'
