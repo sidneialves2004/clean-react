@@ -13,7 +13,7 @@ type Props = {
 }
 
 const Signup: React.FC<Props> = ({ validation, addAccount }: Props) => {
-  const { seturrentAccount } = useContext(ApiContext)
+  const { setCurrentAccount } = useContext(ApiContext)
   const history = useHistory()
   const [state, setState] = useState({
     isLoading: false,
@@ -59,7 +59,7 @@ const Signup: React.FC<Props> = ({ validation, addAccount }: Props) => {
         password: state.password,
         passwordConfirmation: state.passwordConfirmation
       })
-      seturrentAccount(account)
+      setCurrentAccount(account)
       history.replace('/')
     } catch (error) {
       setState({

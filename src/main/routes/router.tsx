@@ -10,7 +10,7 @@ const Router: React.FC = () => {
   return (
     <ApiContext.Provider
       value={{
-        seturrentAccount: setCurrenetAccountAdapter
+        setCurrentAccount: setCurrenetAccountAdapter
       }}>
       <BrowserRouter>
         <Switch>

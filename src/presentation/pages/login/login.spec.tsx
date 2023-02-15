@@ -26,7 +26,7 @@ const makeSut = (params?: SutParams): SutTypes => {
   const setCurrentAccountMock = jest.fn()
   validationStub.errorMessage = params?.validationError
   const sut = render(
-    <ApiContext.Provider value={{ seturrentAccount: setCurrentAccountMock }}>
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
       <Router history={history}>
         <Login
             validation={validationStub}

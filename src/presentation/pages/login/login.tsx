@@ -12,7 +12,7 @@ type Props = {
 }
 
 const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
-  const { seturrentAccount } = useContext(ApiContext)
+  const { setCurrentAccount } = useContext(ApiContext)
   const history = useHistory()
   const [state, setState] = useState({
     isLoading: false,
@@ -48,7 +48,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
         email: state.email,
         password: state.password
       })
-      seturrentAccount(account)
+      setCurrentAccount(account)
       history.replace('/')
     } catch (error) {
       setState({
