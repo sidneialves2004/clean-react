@@ -5,6 +5,7 @@ module.exports = {
     '!<rootDir>/src/main/**/*.{ts,tsx}',
     '!**/*.d.ts'
   ],
+  setupFilesAfterEnv: ['<rootDir>/src/main/config/jest.setup.ts'],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/cypress'
