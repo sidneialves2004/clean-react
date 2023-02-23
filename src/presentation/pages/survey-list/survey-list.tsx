@@ -1,19 +1,18 @@
 import { Footer, Header } from '@/presentation/components'
 import { SurveyContext, List, Error } from '@/presentation/pages/survey-list/components'
-import { ApiContext } from '@/presentation/contexts'
 import { LoadSurveyList } from '@/domain/usecases'
-import { AccessDiniedError } from '@/domain/errors'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Styles from './survey-list-styles.scss'
-import { useHistory } from 'react-router-dom'
+import { useErrorHandler } from '@/presentation/hooks'
 
 type Props = {
   loadSurveyList: LoadSurveyList
 }
 
 const SurveyList: React.FC<Props> = ({ loadSurveyList }: Props) => {
-  const history = useHistory()
-  const { setCurrentAccount } = useContext(ApiContext)
+  const handleError = useErrorHandler((error: Error) => {
+    setState({ ...state, error: error.message })
+  })
   const [state, setState] = useState({
     surveys: [] as LoadSurveyList.SurveyModel[],
     error: '',
@@ -24,12 +23,7 @@ const SurveyList: React.FC<Props> = ({ loadSurveyList }: Props) => {
     loadSurveyList.loadAll()
       .then(surveys => setState({ ...state, surveys }))
       .catch(error => {
-        if (error instanceof AccessDiniedError) {
-          setCurrentAccount(undefined)
-          history.replace('/login')
-        } else {
-          setState({ ...state, error: error.message })
-        }
+        handleError(error)
       })
   }, [state.reload])
 
