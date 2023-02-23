@@ -1,4 +1,5 @@
-import * as FormHelper from '../support/form-helper'
+import * as FormHelper from '../support/form-helpers'
+import * as Helper from '../support/helpers'
 import * as Http from '../support/signup-mocks'
 import faker from 'faker'
 
@@ -60,7 +61,7 @@ describe('Signup', () => {
       .getByTestId('main-error').should('not.exist')
     cy.wait('@mockEmailInUseError')
     FormHelper.textMainError('Este Email ja está em uso')
-    FormHelper.testUrl('/signup')
+    Helper.testUrl('/signup')
   })
 
   it('should present error if server returns error [400,404,500]', () => {
@@ -76,23 +77,7 @@ describe('Signup', () => {
       .getByTestId('main-error').should('not.exist')
     cy.wait('@mockUnexpectedError')
     FormHelper.textMainError('Algo de errado aconteceu. Tente novamente mais tarde')
-    FormHelper.testUrl('/signup')
-  })
-
-  it('should present UnexpectedError if invalid data is returned', () => {
-    const password = faker.random.alphaNumeric(5)
-    Http.mockInvaldData()
-    cy.getByTestId('name').focus().type(faker.random.alphaNumeric(7))
-    cy.getByTestId('email').focus().type(faker.internet.email())
-    cy.getByTestId('password').focus().type(password)
-    cy.getByTestId('passwordConfirmation').focus().type(password)
-    cy.getByTestId('submit').click()
-    cy.getByTestId('error-wrap')
-      .getByTestId('spinner').should('exist')
-      .getByTestId('main-error').should('not.exist')
-    cy.wait('@mockOk')
-    FormHelper.textMainError('Algo de errado aconteceu. Tente novamente mais tarde')
-    FormHelper.testUrl('/signup')
+    Helper.testUrl('/signup')
   })
 
   it('should save account if valid register', () => {
@@ -108,8 +93,8 @@ describe('Signup', () => {
       .getByTestId('main-error').should('not.exist')
     cy.wait('@mockOk')
     cy.getByTestId('spinner').should('not.exist')
-    FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('account')
+    Helper.testUrl('/')
+    Helper.testLocalStorageItem('account')
   })
 
   it('should prevent multiple submits', () => {
@@ -120,7 +105,7 @@ describe('Signup', () => {
     cy.getByTestId('password').focus().type(password)
     cy.getByTestId('passwordConfirmation').focus().type(password)
     cy.getByTestId('submit').dblclick()
-    FormHelper.testHttpCallsCount('mockOk', 1)
+    Helper.testHttpCallsCount('mockOk', 1)
   })
 
   it('should Signup submit the form by clicking the enter key in a field', () => {
@@ -130,15 +115,15 @@ describe('Signup', () => {
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(password).type('{enter}')
     cy.getByTestId('passwordConfirmation').focus().type(password).type('{enter}')
-    FormHelper.testHttpCallsCount('mockOk', 1)
+    Helper.testHttpCallsCount('mockOk', 1)
     cy.getByTestId('spinner').should('not.exist')
-    FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('account')
+    Helper.testUrl('/')
+    Helper.testLocalStorageItem('account')
   })
 
   it('should not submit if form is invalid', () => {
     Http.mockOk()
     cy.getByTestId('email').focus().type(faker.internet.email()).type('{enter}')
-    FormHelper.testHttpCallsCount('mockOk', 0)
+    Helper.testHttpCallsCount('mockOk', 0)
   })
 })

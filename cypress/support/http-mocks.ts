@@ -1,6 +1,6 @@
 import faker from 'faker'
 
-export const mockInvalidCredentialsError = (path: string): void => {
+export const mockUnauthorizedError = (path: string): void => {
   cy.intercept({
     method: 'POST',
     path
@@ -12,9 +12,9 @@ export const mockInvalidCredentialsError = (path: string): void => {
   }).as('mockInvalidCredentialsError')
 }
 
-export const mockEmailInUseError = (path: string): void => {
+export const mockForbiddenError = (method: string, path: string): void => {
   cy.intercept({
-    method: 'POST',
+    method,
     path
   }, {
     statusCode: 403,
@@ -24,7 +24,7 @@ export const mockEmailInUseError = (path: string): void => {
   }).as('mockEmailInUseError')
 }
 
-export const mockUnexpectedError = (method: string, path: string): void => {
+export const mockServerError = (method: string, path: string): void => {
   cy.intercept({
     method,
     path

@@ -51,6 +51,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
       setCurrentAccount(account)
       history.replace('/')
     } catch (error) {
+      console.log(error)
       setState({
         ...state,
         isLoading: false,

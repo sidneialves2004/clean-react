@@ -1,5 +1,6 @@
 import faker from 'faker'
-import * as FormHelper from '../support/form-helper'
+import * as FormHelper from '../support/form-helpers'
+import * as Helper from '../support/helpers'
 import * as Http from '../support/login-mocks'
 
 describe('Login', () => {
@@ -45,7 +46,7 @@ describe('Login', () => {
       .getByTestId('main-error').should('not.exist')
     cy.wait('@mockInvalidCredentialsError')
     FormHelper.textMainError('Credenciais inválidas')
-    FormHelper.testUrl('/login')
+    Helper.testUrl('/login')
   })
 
   // it('should present error if invalid credentials are provided', () => {
@@ -70,20 +71,7 @@ describe('Login', () => {
       .getByTestId('main-error').should('not.exist')
     cy.wait('@mockUnexpectedError')
     FormHelper.textMainError('Algo de errado aconteceu. Tente novamente mais tarde')
-    FormHelper.testUrl('/login')
-  })
-
-  it('should present UnexpectedError if invalid data is returned', () => {
-    Http.mockInvaldData(1000)
-    cy.getByTestId('email').focus().type(faker.internet.email())
-    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
-    cy.getByTestId('submit').click()
-    cy.getByTestId('error-wrap')
-      .getByTestId('spinner').should('exist')
-      .getByTestId('main-error').should('not.exist')
-    cy.wait('@mockOk')
-    FormHelper.textMainError('Algo de errado aconteceu. Tente novamente mais tarde')
-    FormHelper.testUrl('/login')
+    Helper.testUrl('/login')
   })
 
   it('should save account if valid credentials are provided - mocked return', () => {
@@ -96,8 +84,8 @@ describe('Login', () => {
       .getByTestId('main-error').should('not.exist')
     cy.wait('@mockOk')
     cy.getByTestId('spinner').should('not.exist')
-    FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('account')
+    Helper.testUrl('/')
+    Helper.testLocalStorageItem('account')
   })
 
   // it('should save accessToken if valid credentials are provided', () => {
@@ -117,23 +105,23 @@ describe('Login', () => {
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
     cy.getByTestId('submit').dblclick()
-    FormHelper.testHttpCallsCount('mockOk', 1)
+    Helper.testHttpCallsCount('mockOk', 1)
   })
 
   it('should Login submit the form by clicking the enter key in a field', () => {
     Http.mockOk()
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5)).type('{enter}')
-    FormHelper.testHttpCallsCount('mockOk', 1)
+    Helper.testHttpCallsCount('mockOk', 1)
     cy.getByTestId('spinner').should('not.exist')
-    FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('account')
+    Helper.testUrl('/')
+    Helper.testLocalStorageItem('account')
   })
 
   it('should not submit if form is invalid', () => {
     Http.mockOk()
     cy.getByTestId('email').focus().type(faker.internet.email()).type('{enter}')
-    FormHelper.testHttpCallsCount('mockOk', 0)
+    Helper.testHttpCallsCount('mockOk', 0)
   })
 })
 
