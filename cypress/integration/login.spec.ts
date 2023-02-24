@@ -1,7 +1,12 @@
 import faker from 'faker'
-import * as FormHelper from '../support/form-helpers'
-import * as Helper from '../support/helpers'
-import * as Http from '../support/login-mocks'
+import * as FormHelper from '../utils/form-helpers'
+import * as Helper from '../utils/helpers'
+import * as Http from '../utils/http-mocks'
+
+const path = 'login'
+const mockInvalidCredentialsError = (): void => Http.mockUnauthorizedError(path)
+const mockUnexpectedError = (): void => Http.mockServerError('POST', path)
+const mockSuccess = (delay?: number): void => Http.mockOk('POST', path, { accessToken: faker.datatype.uuid(), name: faker.name.findName() } , delay)
 
 describe('Login', () => {
   beforeEach(() => {
@@ -36,7 +41,7 @@ describe('Login', () => {
   })
 
   it('should present error if invalid credentials are provided - mocked return', () => {
-    Http.mockInvalidCredentialsError()
+    mockInvalidCredentialsError()
 
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
@@ -62,7 +67,7 @@ describe('Login', () => {
   // })
 
   it('should present error if server returns error [400,404,500]', () => {
-    Http.mockUnexpectedError()
+    mockUnexpectedError()
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
     cy.getByTestId('submit').click()
@@ -75,7 +80,7 @@ describe('Login', () => {
   })
 
   it('should save account if valid credentials are provided - mocked return', () => {
-    Http.mockOk(1000)
+    mockSuccess(1000)
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
     cy.getByTestId('submit').click()
@@ -101,7 +106,7 @@ describe('Login', () => {
   // })
 
   it('should prevent multiple submits', () => {
-    Http.mockOk()
+    mockSuccess()
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
     cy.getByTestId('submit').dblclick()
@@ -109,7 +114,7 @@ describe('Login', () => {
   })
 
   it('should Login submit the form by clicking the enter key in a field', () => {
-    Http.mockOk()
+    mockSuccess()
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5)).type('{enter}')
     Helper.testHttpCallsCount('mockOk', 1)
@@ -119,7 +124,7 @@ describe('Login', () => {
   })
 
   it('should not submit if form is invalid', () => {
-    Http.mockOk()
+    mockSuccess()
     cy.getByTestId('email').focus().type(faker.internet.email()).type('{enter}')
     Helper.testHttpCallsCount('mockOk', 0)
   })
