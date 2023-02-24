@@ -4,7 +4,7 @@ import * as Http from '../support/survey-list-mocks'
 
 describe('SurveyList', () => {
   beforeEach(() => {
-    Helper.setLocalStorageItem('account', { accessToken: faker.random.uuid(), name: faker.name.findName() })
+    Helper.setLocalStorageItem('account', { accessToken: faker.datatype.uuid(), name: faker.name.findName() })
   })
 
   it('should present error on UnexpectedError', () => {
@@ -17,5 +17,13 @@ describe('SurveyList', () => {
     Http.mockAccessDiniedError()
     cy.visit('')
     Helper.testUrl('/login')
+  })
+
+  it('should present correct username', () => {
+    Http.mockUnexpectedError()
+    cy.visit('')
+    cy.window().then((window: any) =>
+      cy.getByTestId('username').should('contain.text', JSON.parse(window.localStorage.getItem('account')).name)
+    )
   })
 })
