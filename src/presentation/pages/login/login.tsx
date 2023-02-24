@@ -29,12 +29,12 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     const formData = { email, password }
     const emailError = validation.validate('email', formData)
     const passwordError = validation.validate('password', formData)
-    setState({
-      ...state,
+    setState(old => ({
+      ...old,
       emailError,
       passwordError,
       isFormInvalid: !!emailError || !!passwordError
-    })
+    }))
   }, [state.email, state.password])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -43,7 +43,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
       if (state.isLoading || state.isFormInvalid) {
         return
       }
-      setState({ ...state, isLoading: true })
+      setState(old => ({ ...old, isLoading: true }))
       const account = await authentication.auth({
         email: state.email,
         password: state.password
@@ -51,12 +51,11 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
       setCurrentAccount(account)
       history.replace('/')
     } catch (error) {
-      console.log(error)
-      setState({
-        ...state,
+      setState(old => ({
+        ...old,
         isLoading: false,
         mainError: error.message
-      })
+      }))
     }
   }
 
