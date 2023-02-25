@@ -4,8 +4,8 @@ import * as Http from '../utils/http-mocks'
 import faker from 'faker'
 
 const path = 'signup'
-const mockEmailInUseError = (): void => Http.mockForbiddenError('POST',path)
-const mockUnexpectedError = (): void => Http.mockServerError('POST',path)
+const mockEmailInUseError = (delay?: number): void => Http.mockForbiddenError('POST',path, delay)
+const mockUnexpectedError = (delay?: number): void => Http.mockServerError('POST',path, delay)
 const mockSuccess = (delay?: number): void => Http.mockOk('POST',path, { accessToken: faker.random.uuid(), name: faker.name.findName() }, delay)
 
 describe('Signup', () => {
@@ -54,7 +54,7 @@ describe('Signup', () => {
   })
 
   it('should present EmailInUseError on 403', () => {
-    mockEmailInUseError()
+    mockEmailInUseError(1000)
     const password = faker.random.alphaNumeric(5)
     cy.getByTestId('name').focus().type(faker.random.alphaNumeric(7))
     cy.getByTestId('email').focus().type(faker.internet.email())
@@ -71,7 +71,7 @@ describe('Signup', () => {
 
   it('should present error if server returns error [400,404,500]', () => {
     const password = faker.random.alphaNumeric(5)
-    mockUnexpectedError()
+    mockUnexpectedError(1000)
     cy.getByTestId('name').focus().type(faker.random.alphaNumeric(7))
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(password)
@@ -110,6 +110,7 @@ describe('Signup', () => {
     cy.getByTestId('password').focus().type(password)
     cy.getByTestId('passwordConfirmation').focus().type(password)
     cy.getByTestId('submit').dblclick()
+    cy.wait('@mockOk')
     Helper.testHttpCallsCount('mockOk', 1)
   })
 

@@ -5,7 +5,7 @@ import * as Http from '../utils/http-mocks'
 
 const path = 'login'
 const mockInvalidCredentialsError = (): void => Http.mockUnauthorizedError(path)
-const mockUnexpectedError = (): void => Http.mockServerError('POST', path)
+const mockUnexpectedError = (delay?: number): void => Http.mockServerError('POST', path, delay)
 const mockSuccess = (delay?: number): void => Http.mockOk('POST', path, { accessToken: faker.datatype.uuid(), name: faker.name.findName() } , delay)
 
 describe('Login', () => {
@@ -67,7 +67,7 @@ describe('Login', () => {
   // })
 
   it('should present error if server returns error [400,404,500]', () => {
-    mockUnexpectedError()
+    mockUnexpectedError(1000)
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
     cy.getByTestId('submit').click()
@@ -110,6 +110,7 @@ describe('Login', () => {
     cy.getByTestId('email').focus().type(faker.internet.email())
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
     cy.getByTestId('submit').dblclick()
+    cy.wait('@mockOk')
     Helper.testHttpCallsCount('mockOk', 1)
   })
 

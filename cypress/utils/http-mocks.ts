@@ -12,11 +12,12 @@ export const mockUnauthorizedError = (path: string): void => {
   }).as('mockInvalidCredentialsError')
 }
 
-export const mockForbiddenError = (method: string, path: string): void => {
+export const mockForbiddenError = (method: string, path: string, delay?: number): void => {
   cy.intercept({
     method,
     path
   }, {
+    delay,
     statusCode: 403,
     body: {
       error: faker.random.words()
@@ -24,11 +25,12 @@ export const mockForbiddenError = (method: string, path: string): void => {
   }).as('mockEmailInUseError')
 }
 
-export const mockServerError = (method: string, path: string): void => {
+export const mockServerError = (method: string, path: string, delay?: number): void => {
   cy.intercept({
     method,
     path
   }, {
+    delay,
     statusCode: faker.helpers.randomize([400, 404, 500]),
     body: {
       error: faker.random.words()
