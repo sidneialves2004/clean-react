@@ -6,6 +6,7 @@ export default defineConfig({
     supportFile: './cypress/support/index.js',
     specPattern: './cypress/integration',
     baseUrl: 'http://localhost:3000',
+    video: false,
     setupNodeEvents (on, config) {
       // implement node event listeners here
     }
