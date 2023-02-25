@@ -31,11 +31,14 @@ module.exports = merge(common, {
   },
   externals: {
     react: 'React',
+    axios: 'axios',
     'react-dom': 'ReactDOM'
+    // 'react-router-dom': 'ReactRouterDOM'
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './template.prod.html'
+      template: './template.prod.html',
+      base: '/'
     }),
     new DefinePlugin({
       'process.env.API_URL': JSON.stringify('http://localhost:5050/api')
