@@ -13,10 +13,10 @@ const Input: React.FC<Props> = (props: Props) => {
     event.target.readOnly = false
   }
   const handleChange = (event: React.FocusEvent<HTMLInputElement>): void => {
-    setState({
-      ...state,
+    setState(old => ({
+      ...old,
       [event.target.name]: event.target.value
-    })
+    }))
   }
 
   return (
