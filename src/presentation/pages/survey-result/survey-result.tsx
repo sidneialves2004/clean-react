@@ -8,14 +8,14 @@ const SurveyResult: React.FC = () => {
     <div className={Styles.surveyResultWrap}>
       <Header />
       <div className={Styles.contentWrap}>
-          { false &&
+          { true &&
           <>
             <hgroup>
               <Calendar date={new Date()} className={Styles.calendarWrap} />
               <h2>Qual é seu framework favorito ?  twertweQual é seu framework favorito ?</h2>
             </hgroup>
             <FlipMove className={Styles.answerList}>
-              <li>
+              <li className={Styles.active}>
                 <img src='https://miro.medium.com/v2/resize:fit:640/format:webp/1*cPh7ujRIfcHAy4kW2ADGOw.png' alt="" />
                 <span className={Styles.answer}>ReactJS</span>
                 <span className={Styles.percent}>50%</span>
