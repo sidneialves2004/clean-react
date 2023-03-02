@@ -13,3 +13,13 @@ export const mockSurveyListModel = (): LoadSurveyList.SurveyModel[] => ([
   mockSurveyModel(),
   mockSurveyModel()
 ])
+
+export class LoadSurveyListSpy implements LoadSurveyList {
+  callsCount = 0
+  surveys = mockSurveyListModel()
+
+  async loadAll (): Promise<LoadSurveyList.SurveyModel[]> {
+    this.callsCount++
+    return this.surveys
+  }
+}
