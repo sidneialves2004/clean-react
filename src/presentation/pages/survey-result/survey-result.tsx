@@ -9,7 +9,7 @@ type Props = {
 }
 
 const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
-  const [state] = useState({
+  const [state, setState] = useState({
     isLoading: false,
     error: '',
     surveyResult: null as LoadSurveyResult.ResultModel
@@ -17,7 +17,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
 
   useEffect(() => {
     loadSurveyResult.load()
-      .then()
+      .then(surveyResult => setState(old => ({ ...old, surveyResult })))
       .catch()
   },[])
   return (
@@ -27,16 +27,19 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
           { state.surveyResult &&
           <>
             <hgroup>
-              <Calendar date={new Date()} className={Styles.calendarWrap} />
-              <h2>Qual é seu framework favorito ?  twertweQual é seu framework favorito ?</h2>
+              <Calendar date={state.surveyResult.date} className={Styles.calendarWrap} />
+              <h2 data-testid="question">{state.surveyResult.question}</h2>
             </hgroup>
-            <FlipMove className={Styles.answerList}>
-              <li className={Styles.active}>
-                <img src='https://miro.medium.com/v2/resize:fit:640/format:webp/1*cPh7ujRIfcHAy4kW2ADGOw.png' alt="" />
-                <span className={Styles.answer}>ReactJS</span>
-                <span className={Styles.percent}>50%</span>
-              </li>
-            </FlipMove>
+            <FlipMove data-testid="answers" className={Styles.answerList}>
+              { state.surveyResult.answers.map(answer => (
+                  <li data-testid="answer-wrap" key={answer.answer} className={answer.isCurrentAccountAnswer ? Styles.active : '' }>
+                    { answer.image && <img data-testid="image" src={answer.image} alt={answer.answer} /> }
+                    <span data-testid="answer" className={Styles.answer}>{answer.answer}</span>
+                    <span data-testid="percent" className={Styles.percent}>{`${answer.percent}%`}</span>
+                  </li>
+              )
+              )}
+             </FlipMove>
             <button>Voltar</button>
         </>
         }
