@@ -13,15 +13,6 @@ const SurveyList: React.FC<Props> = ({ loadSurveyList }: Props) => {
   const handleError = useErrorHandler((error: Error) => {
     setState(old => ({ ...old, error: error.message }))
   })
-
-  const reload = (): void => {
-    setState(old => ({
-      ...old,
-      surveys: [],
-      error: '',
-      reload: !old.reload
-    }))
-  }
   const [state, setState] = useState({
     surveys: [] as LoadSurveyList.SurveyModel[],
     error: '',
@@ -36,6 +27,14 @@ const SurveyList: React.FC<Props> = ({ loadSurveyList }: Props) => {
       })
   }, [state.reload])
 
+  const reload = (): void => {
+    setState(old => ({
+      ...old,
+      surveys: [],
+      error: '',
+      reload: !old.reload
+    }))
+  }
   return (
     <div className={Styles.surveyListWrap}>
       <Header />
