@@ -4,14 +4,13 @@ import { SurveyResult } from '@/presentation/pages'
 import { ApiContext } from '@/presentation/contexts'
 import { LoadSurveyResultSpy, mockAccountModel, mockSurveyResultModel } from '@/domain/test'
 import { AccountModel } from '@/domain/models'
+import { UnexpectedError } from '@/domain/errors'
 
 type SutTypes = {
   loadSurveyResultSpy: LoadSurveyResultSpy
 }
 
-const makeSut = async (surveyResult = mockSurveyResultModel()): Promise<SutTypes> => {
-  const loadSurveyResultSpy = new LoadSurveyResultSpy()
-  loadSurveyResultSpy.surveyResult = surveyResult
+const makeSut = async (loadSurveyResultSpy = new LoadSurveyResultSpy()): Promise<SutTypes> => {
   const getCurrentAccountMock = (): AccountModel => mockAccountModel()
 
   await act(async () => {
@@ -32,7 +31,9 @@ const makeSut = async (surveyResult = mockSurveyResultModel()): Promise<SutTypes
 
 describe('SurveyResult Component', () => {
   test('Should present correct initial state', async () => {
-    await makeSut(null)
+    const loadSurveyResultSpy = new LoadSurveyResultSpy()
+    loadSurveyResultSpy.surveyResult = null
+    await makeSut(loadSurveyResultSpy)
     const surveyResult = screen.getByTestId('survey-result')
     expect(surveyResult.childElementCount).toBe(0)
     expect(screen.queryByTestId('error')).not.toBeInTheDocument()
@@ -40,7 +41,8 @@ describe('SurveyResult Component', () => {
   })
 
   test('Should call LoadSurveyResult', async () => {
-    const { loadSurveyResultSpy } = await makeSut()
+    const loadSurveyResultSpy = new LoadSurveyResultSpy()
+    await makeSut(loadSurveyResultSpy)
     screen.getByTestId('survey-result')
     expect(loadSurveyResultSpy.callsCount).toBe(1)
   })
@@ -49,7 +51,9 @@ describe('SurveyResult Component', () => {
     const surveyResult = Object.assign(mockSurveyResultModel(), {
       date: new Date('2019-10-05T00:00:00')
     })
-    await makeSut(surveyResult)
+    const loadSurveyResultSpy = new LoadSurveyResultSpy()
+    loadSurveyResultSpy.surveyResult = surveyResult
+    await makeSut(loadSurveyResultSpy)
     screen.getByTestId('survey-result')
     expect(screen.getByTestId('day')).toHaveTextContent('05')
     expect(screen.getByTestId('month')).toHaveTextContent('out')
@@ -71,5 +75,15 @@ describe('SurveyResult Component', () => {
     const percents = screen.queryAllByTestId('percent')
     expect(percents[0]).toHaveTextContent(`${surveyResult.answers[0].percent}%`)
     expect(percents[1]).toHaveTextContent(`${surveyResult.answers[1].percent}%`)
+  })
+
+  test('Should error on UnexpectedError', async () => {
+    const loadSurveyResultSpy = new LoadSurveyResultSpy()
+    const error = new UnexpectedError()
+    jest.spyOn(loadSurveyResultSpy,'load').mockRejectedValueOnce(error)
+    await makeSut(loadSurveyResultSpy)
+    expect(screen.queryByTestId('question')).not.toBeInTheDocument()
+    expect(screen.getByTestId('error')).toHaveTextContent(error.message)
+    expect(screen.queryByTestId('loading')).not.toBeInTheDocument()
   })
 })
