@@ -4,6 +4,7 @@ import FlipMove from 'react-flip-move'
 import Styles from './result-styles.scss'
 import { useHistory } from 'react-router-dom'
 import { LoadSurveyResult } from '@/domain/usecases'
+import { SurveyResultAnswerData } from '@/presentation/pages/survey-result/components'
 
 type Props = {
   surveyResult: LoadSurveyResult.ResultModel
@@ -18,14 +19,11 @@ const Result: React.FC<Props> = ({ surveyResult }: Props) => {
         <h2 data-testid="question">{surveyResult.question}</h2>
       </hgroup>
       <FlipMove data-testid="answers" className={Styles.answerList}>
-        { surveyResult.answers.map(answer => (
-            <li data-testid="answer-wrap" key={answer.answer} className={answer.isCurrentAccountAnswer ? Styles.active : '' }>
-              { answer.image && <img data-testid="image" src={answer.image} alt={answer.answer} /> }
-              <span data-testid="answer" className={Styles.answer}>{answer.answer}</span>
-              <span data-testid="percent" className={Styles.percent}>{`${answer.percent}%`}</span>
-            </li>
-        )
-        )}
+        <>
+          { surveyResult.answers.map(answer => (
+              <SurveyResultAnswerData key={answer.answer} answer={answer} />
+          ))}
+        </>
       </FlipMove>
       <button data-testid="back-button" className={Styles.button} onClick={goBack}>Voltar</button>
     </>
