@@ -15,7 +15,7 @@ type SutTypes = {
 }
 
 const makeSut = async (loadSurveyResultSpy = new LoadSurveyResultSpy()): Promise<SutTypes> => {
-  const history = createMemoryHistory({ initialEntries: ['/surveys'] })
+  const history = createMemoryHistory({ initialEntries: ['/', '/surveys/any_id'], initialIndex: 1 })
   const getCurrentAccountMock = (): AccountModel => mockAccountModel()
   const setCurrentAccountMock = jest.fn()
   await act(async () => {
@@ -96,12 +96,11 @@ describe('SurveyResult Component', () => {
     expect(screen.queryByTestId('loading')).not.toBeInTheDocument()
   })
 
-  test('Should redirect to login page if access dinied', async () => {
+  test('Should redirect to login page if access denied', async () => {
     const loadSurveyResultSpy = new LoadSurveyResultSpy()
     const error = new AccessDiniedError()
     jest.spyOn(loadSurveyResultSpy,'load').mockRejectedValueOnce(error)
     const { history, setCurrentAccountMock } = await makeSut(loadSurveyResultSpy)
-    expect(history.length).toBe(1)
     expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
     expect(history.location.pathname).toBe('/login')
   })
@@ -115,5 +114,11 @@ describe('SurveyResult Component', () => {
     })
     expect(loadSurveyResultSpy.callsCount).toBe(1)
     screen.getByTestId('survey-result')
+  })
+
+  test('Should goto SurveyList on back button click', async () => {
+    const { history } = await makeSut()
+    fireEvent.click(screen.getByTestId('back-button'))
+    expect(history.location.pathname).toBe('/')
   })
 })
