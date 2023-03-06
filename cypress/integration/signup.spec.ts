@@ -3,10 +3,10 @@ import * as Helper from '../utils/helpers'
 import * as Http from '../utils/http-mocks'
 import faker from 'faker'
 
-const path = 'signup'
-const mockEmailInUseError = (delay?: number): void => Http.mockForbiddenError('POST',path, delay)
-const mockUnexpectedError = (delay?: number): void => Http.mockServerError('POST',path, delay)
-const mockSuccess = (delay?: number): void => Http.mockOk('POST',path, { accessToken: faker.random.uuid(), name: faker.name.findName() }, delay)
+const path = /api\/signup/
+const mockEmailInUseError = (delay?: number): void => Http.mockForbiddenError(path, 'POST', delay)
+const mockUnexpectedError = (delay?: number): void => Http.mockServerError(path, 'POST', delay)
+const mockSuccess = (delay?: number): void => Http.mockOk(path, 'POST', { accessToken: faker.random.uuid(), name: faker.name.findName() }, delay)
 
 describe('Signup', () => {
   beforeEach(() => {

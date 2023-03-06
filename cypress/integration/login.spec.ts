@@ -3,10 +3,10 @@ import * as FormHelper from '../utils/form-helpers'
 import * as Helper from '../utils/helpers'
 import * as Http from '../utils/http-mocks'
 
-const path = 'login'
+const path = /api\/login/
 const mockInvalidCredentialsError = (): void => Http.mockUnauthorizedError(path)
-const mockUnexpectedError = (delay?: number): void => Http.mockServerError('POST', path, delay)
-const mockSuccess = (delay?: number): void => Http.mockOk('POST', path, { accessToken: faker.datatype.uuid(), name: faker.name.findName() } , delay)
+const mockUnexpectedError = (delay?: number): void => Http.mockServerError(path, 'POST', delay)
+const mockSuccess = (delay?: number): void => Http.mockOk(path, 'POST', { accessToken: faker.datatype.uuid(), name: faker.name.findName() } , delay)
 
 describe('Login', () => {
   beforeEach(() => {

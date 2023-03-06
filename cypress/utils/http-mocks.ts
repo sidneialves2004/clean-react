@@ -1,9 +1,9 @@
 import faker from 'faker'
 
-export const mockUnauthorizedError = (path: string): void => {
+export const mockUnauthorizedError = (url: RegExp): void => {
   cy.intercept({
     method: 'POST',
-    path
+    url
   }, {
     statusCode: 401,
     body: {
@@ -12,10 +12,10 @@ export const mockUnauthorizedError = (path: string): void => {
   }).as('mockInvalidCredentialsError')
 }
 
-export const mockForbiddenError = (method: string, path: string, delay?: number): void => {
+export const mockForbiddenError = (url: RegExp,method: string, delay?: number): void => {
   cy.intercept({
     method,
-    path
+    url
   }, {
     delay,
     statusCode: 403,
@@ -25,10 +25,10 @@ export const mockForbiddenError = (method: string, path: string, delay?: number)
   }).as('mockEmailInUseError')
 }
 
-export const mockServerError = (method: string, path: string, delay?: number): void => {
+export const mockServerError = (url: RegExp, method: string, delay?: number): void => {
   cy.intercept({
     method,
-    path
+    url
   }, {
     delay,
     statusCode: faker.helpers.randomize([400, 404, 500]),
@@ -38,13 +38,13 @@ export const mockServerError = (method: string, path: string, delay?: number): v
   }).as('mockUnexpectedError')
 }
 
-export const mockOk = (method: string, path: string, body: any,delay?: number): void => {
+export const mockOk = (url: RegExp, method: string, body: any, delay?: number): void => {
   cy.intercept({
     method,
-    path
+    url
   }, {
-    delay,
     statusCode: 200,
-    body
+    body,
+    delay
   }).as('mockOk')
 }
