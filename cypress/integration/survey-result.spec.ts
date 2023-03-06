@@ -21,6 +21,7 @@ const surveyResult = {
   }]
 }
 
+const mockAccessDiniedError = (): void => Http.mockForbiddenError(path, 'GET')
 const mockSuccess = (): void => Http.mockOk(path, 'GET', surveyResult, 1000)
 const mockUnexpectedError = (): void => Http.mockServerError(path,'GET')
 
@@ -43,5 +44,11 @@ describe('SurveyResult', () => {
     cy.getByTestId('reload').click()
     cy.wait('@mockOk')
     cy.getByTestId('question').should('exist')
+  })
+
+  it('should logout on AccessDiniedError', () => {
+    mockAccessDiniedError()
+    cy.visit('/surveys/any_id')
+    Helper.testUrl('/login')
   })
 })
