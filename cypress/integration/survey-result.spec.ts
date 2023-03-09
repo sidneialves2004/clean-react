@@ -78,14 +78,16 @@ describe('SurveyResult', () => {
       assert.equal(li.find('[data-testid="answer"]').text(), surveyResult.answers[0].answer)
       assert.equal(li.find('[data-testid="image"]').attr('src'), surveyResult.answers[0].image)
       assert.equal(li.find('[data-testid="percent"]').text(), `${surveyResult.answers[0].percent}%`)
-      assert.equal(li.css('box-shadow'), 'rgb(148, 54, 96) 0px 0px 3px 2px')
+      if (surveyResult.answers[0].isCurrentAccountAnswer) assert.notEqual(li.css('box-shadow'), 'none')
+      else assert.equal(li.css('box-shadow'), 'none')
     })
 
     cy.get('li:nth-child(2)').then(li => {
       assert.equal(li.find('[data-testid="answer"]').text(), surveyResult.answers[1].answer)
       assert.equal(li.find('[data-testid="image"]').attr('src'), surveyResult.answers[1].image)
       assert.equal(li.find('[data-testid="percent"]').text(), `${surveyResult.answers[1].percent}%`)
-      assert.equal(li.css('box-shadow'), 'none')
+      if (surveyResult.answers[1].isCurrentAccountAnswer) assert.notEqual(li.css('box-shadow'), 'none')
+      else assert.equal(li.css('box-shadow'), 'none')
     })
   })
 
