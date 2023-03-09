@@ -6,7 +6,7 @@ import faker from 'faker'
 const path = /api\/signup/
 const mockEmailInUseError = (delay?: number): void => Http.mockForbiddenError(path, 'POST', delay)
 const mockUnexpectedError = (delay?: number): void => Http.mockServerError(path, 'POST', delay)
-const mockSuccess = (delay?: number): void => Http.mockOk(path, 'POST', { accessToken: faker.random.uuid(), name: faker.name.findName() }, delay)
+const mockSuccess = (delay?: number): void => Http.mockOk(path, 'POST', { accessToken: faker.random.uuid(), name: faker.name.findName() }, 'mockOk', delay)
 
 describe('Signup', () => {
   beforeEach(() => {

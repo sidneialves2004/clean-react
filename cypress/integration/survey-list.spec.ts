@@ -22,7 +22,7 @@ const surveyList = [{
 
 const mockUnexpectedError = (): void => Http.mockServerError(path, 'GET')
 const mockAccessDiniedError = (): void => Http.mockForbiddenError(path, 'GET')
-const mockSuccess = (): void => Http.mockOk(path, 'GET', surveyList, 1000)
+const mockSuccess = (): void => Http.mockOk(path, 'GET', surveyList, 'mockOk', 1000)
 
 describe('SurveyList', () => {
   beforeEach(() => {

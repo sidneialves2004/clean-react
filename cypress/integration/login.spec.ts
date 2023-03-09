@@ -6,7 +6,7 @@ import * as Http from '../utils/http-mocks'
 const path = /api\/login/
 const mockInvalidCredentialsError = (): void => Http.mockUnauthorizedError(path)
 const mockUnexpectedError = (delay?: number): void => Http.mockServerError(path, 'POST', delay)
-const mockSuccess = (delay?: number): void => Http.mockOk(path, 'POST', { accessToken: faker.datatype.uuid(), name: faker.name.findName() } , delay)
+const mockSuccess = (delay?: number): void => Http.mockOk(path, 'POST', { accessToken: faker.datatype.uuid(), name: faker.name.findName() }, 'mockOk', delay)
 
 describe('Login', () => {
   beforeEach(() => {
