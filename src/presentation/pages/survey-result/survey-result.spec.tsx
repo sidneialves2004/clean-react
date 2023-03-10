@@ -121,4 +121,14 @@ describe('SurveyResult Component', () => {
     fireEvent.click(screen.getByTestId('back-button'))
     expect(history.location.pathname).toBe('/')
   })
+
+  test('Should show Loading', async () => {
+    const loadSurveyResultSpy = new LoadSurveyResultSpy()
+    jest.spyOn(loadSurveyResultSpy,'load').mockRejectedValueOnce(new UnexpectedError())
+    await makeSut(loadSurveyResultSpy)
+    // await act(async () => {
+    fireEvent.click(screen.getByTestId('reload'))
+    // })
+    expect(screen.queryByTestId('loading')).toBeInTheDocument()
+  })
 })
