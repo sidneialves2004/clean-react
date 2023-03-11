@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '@/data/protocols/http'
-import { HttpClientSpy } from '@/data/test'
+import { HttpClientSpy, mockRemoteSurveyResultModel } from '@/data/test'
 import { RemoteSaveSurveyResult } from '@/data/usecases'
 import { AccessDiniedError, UnexpectedError } from '@/domain/errors'
 import { SaveSurveyResult } from '@/domain/usecases'
@@ -27,6 +27,10 @@ describe('RemoteSaveSurveyResult', () => {
   test('Should call HttpClient with correct values', async () => {
     const url = faker.internet.url()
     const { sut, httpClientSpy } = makeSut(url)
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: mockRemoteSurveyResultModel()
+    }
     const params = mockSaveSurveyResultParams()
     await sut.save(params)
     expect(httpClientSpy.url).toBe(url)
@@ -37,7 +41,8 @@ describe('RemoteSaveSurveyResult', () => {
   test('Should throw AccessDiniedError if HttpGetClient returns 403 ', async () => {
     const { sut, httpClientSpy } = makeSut()
     httpClientSpy.response = {
-      statusCode: HttpStatusCode.forbidden
+      statusCode: HttpStatusCode.forbidden,
+      body: mockRemoteSurveyResultModel()
     }
     const promise = sut.save(mockSaveSurveyResultParams())
     await expect(promise).rejects.toThrow(new AccessDiniedError())
@@ -46,7 +51,8 @@ describe('RemoteSaveSurveyResult', () => {
   test('Should throw UnexpectedError if HttpGetClient returns 404 ', async () => {
     const { sut, httpClientSpy } = makeSut()
     httpClientSpy.response = {
-      statusCode: HttpStatusCode.notFound
+      statusCode: HttpStatusCode.notFound,
+      body: mockRemoteSurveyResultModel()
     }
     const promise = sut.save(mockSaveSurveyResultParams())
     await expect(promise).rejects.toThrow(new UnexpectedError())
@@ -55,9 +61,25 @@ describe('RemoteSaveSurveyResult', () => {
   test('Should throw UnexpectedError if HttpGetClient returns 500 ', async () => {
     const { sut, httpClientSpy } = makeSut()
     httpClientSpy.response = {
-      statusCode: HttpStatusCode.serverError
+      statusCode: HttpStatusCode.serverError,
+      body: mockRemoteSurveyResultModel()
     }
     const promise = sut.save(mockSaveSurveyResultParams())
     await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  test('Should return a SurveyResult on 200 ', async () => {
+    const { sut, httpClientSpy } = makeSut()
+    const httpResult = mockRemoteSurveyResultModel()
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: httpResult
+    }
+    const httpResponse = await sut.save(mockSaveSurveyResultParams())
+    expect(httpResponse).toEqual({
+      question: httpResult.question,
+      answers: httpResult.answers,
+      date: new Date(httpResult.date)
+    })
   })
 })
