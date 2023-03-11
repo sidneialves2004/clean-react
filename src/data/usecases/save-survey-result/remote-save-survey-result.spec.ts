@@ -1,5 +1,7 @@
+import { HttpStatusCode } from '@/data/protocols/http'
 import { HttpClientSpy } from '@/data/test'
 import { RemoteSaveSurveyResult } from '@/data/usecases'
+import { AccessDiniedError } from '@/domain/errors'
 import { SaveSurveyResult } from '@/domain/usecases'
 import faker from 'faker'
 
@@ -30,5 +32,14 @@ describe('RemoteSaveSurveyResult', () => {
     expect(httpClientSpy.url).toBe(url)
     expect(httpClientSpy.method).toBe('put')
     expect(httpClientSpy.body).toEqual(params)
+  })
+
+  test('Should throw AccessDiniedError if HttpGetClient returns 403 ', async () => {
+    const { sut, httpClientSpy } = makeSut()
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.forbidden
+    }
+    const promise = sut.save(mockSaveSurveyResultParams())
+    await expect(promise).rejects.toThrow(new AccessDiniedError())
   })
 })
