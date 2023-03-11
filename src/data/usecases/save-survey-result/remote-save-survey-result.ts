@@ -1,6 +1,6 @@
 import { RemoteSurveyResultModel } from '@/data/models'
 import { HttpClient, HttpStatusCode } from '@/data/protocols/http'
-import { AccessDiniedError } from '@/domain/errors'
+import { AccessDiniedError, UnexpectedError } from '@/domain/errors'
 import { SaveSurveyResult } from '@/domain/usecases'
 
 export class RemoteSaveSurveyResult implements SaveSurveyResult {
@@ -15,8 +15,9 @@ export class RemoteSaveSurveyResult implements SaveSurveyResult {
       body: params
     })
     switch (httpResponse.statusCode) {
+      case HttpStatusCode.ok: return null
       case HttpStatusCode.forbidden: throw new AccessDiniedError()
-      default: return null
+      default: throw new UnexpectedError()
     }
   }
 }
