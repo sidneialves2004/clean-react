@@ -119,9 +119,10 @@ describe('SurveyResult Component', () => {
     const loadSurveyResultSpy = new LoadSurveyResultSpy()
     jest.spyOn(loadSurveyResultSpy,'load').mockRejectedValueOnce(new UnexpectedError())
     await makeSut({ loadSurveyResultSpy })
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('reload'))
-    })
+    // await act(async () => {
+    fireEvent.click(screen.getByTestId('reload'))
+    // })
+    expect(screen.queryByTestId('loading')).toBeInTheDocument()
     expect(loadSurveyResultSpy.callsCount).toBe(1)
     screen.getByTestId('survey-result')
   })
@@ -130,16 +131,6 @@ describe('SurveyResult Component', () => {
     const { history } = await makeSut()
     fireEvent.click(screen.getByTestId('back-button'))
     expect(history.location.pathname).toBe('/')
-  })
-
-  test('Should show Loading', async () => {
-    const loadSurveyResultSpy = new LoadSurveyResultSpy()
-    jest.spyOn(loadSurveyResultSpy,'load').mockRejectedValueOnce(new UnexpectedError())
-    await makeSut({ loadSurveyResultSpy })
-    // await act(async () => {
-    fireEvent.click(screen.getByTestId('reload'))
-    // })
-    expect(screen.queryByTestId('loading')).toBeInTheDocument()
   })
 
   test('Should not present Loading on active asnwer click', async () => {
