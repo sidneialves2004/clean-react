@@ -1,5 +1,5 @@
 import faker from 'faker'
-import { LoadSurveyResult } from '../usecases'
+import { LoadSurveyResult, SaveSurveyResult } from '../usecases'
 
 export const mockAnswer = (isCurrentAccountAnswer: boolean,image?: string): any => ({
   image,
@@ -24,6 +24,16 @@ export class LoadSurveyResultSpy implements LoadSurveyResult {
 
   async load (): Promise<LoadSurveyResult.ResultModel> {
     this.callsCount++
+    return this.surveyResult
+  }
+}
+
+export class SaveSurveyResultSpy implements SaveSurveyResult {
+  params: SaveSurveyResult.Params
+  surveyResult = mockSurveyResultModel()
+
+  async save (params: SaveSurveyResult.Params): Promise<SaveSurveyResult.Model> {
+    this.params = params
     return this.surveyResult
   }
 }
