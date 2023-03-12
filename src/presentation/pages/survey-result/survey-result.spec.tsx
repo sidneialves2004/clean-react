@@ -131,4 +131,11 @@ describe('SurveyResult Component', () => {
     // })
     expect(screen.queryByTestId('loading')).toBeInTheDocument()
   })
+
+  test('Should not present Loading on active asnwer click', async () => {
+    await makeSut()
+    const answerWrap = screen.queryAllByTestId('answer-wrap')
+    fireEvent.click(answerWrap[0])
+    expect(screen.queryByTestId('loading')).not.toBeInTheDocument()
+  })
 })
