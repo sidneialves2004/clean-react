@@ -163,4 +163,17 @@ describe('SurveyResult Component', () => {
     expect(screen.getByTestId('error')).toHaveTextContent(error.message)
     expect(screen.queryByTestId('loading')).not.toBeInTheDocument()
   })
+
+  test('Should redirect to login page if access denied', async () => {
+    const saveSurveyResultSpy = new SaveSurveyResultSpy()
+    const error = new AccessDiniedError()
+    jest.spyOn(saveSurveyResultSpy,'save').mockRejectedValueOnce(error)
+    const { history, setCurrentAccountMock } = await makeSut({ saveSurveyResultSpy })
+    const answerWrap = screen.queryAllByTestId('answer-wrap')
+    await act(async () => {
+      fireEvent.click(answerWrap[1])
+    })
+    expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
+    expect(history.location.pathname).toBe('/login')
+  })
 })
