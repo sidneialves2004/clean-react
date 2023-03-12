@@ -42,7 +42,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult, saveSurveyResult }: P
     setState(old => ({ ...old, isLoading: true }))
     saveSurveyResult.save({ answer })
       .then()
-      .catch()
+      .catch(handleError)
   }
 
   return (
