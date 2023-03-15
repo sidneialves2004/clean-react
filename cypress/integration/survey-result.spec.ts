@@ -106,6 +106,8 @@ describe('SurveyResult', () => {
 
   describe('Save',() => {
     const mockUnexpectedError = (): void => Http.mockServerError(pathSurveyResult,'PUT')
+    const mockAccessDiniedError = (): void => Http.mockForbiddenError(pathSurveyResult, 'PUT')
+
     beforeEach(() => {
       Helper.setLocalStorageItem('account', { accessToken: faker.datatype.uuid(), name: faker.name.findName() })
       mockLoadSuccessResult()
@@ -118,6 +120,12 @@ describe('SurveyResult', () => {
       cy.get('li:nth-child(2)').click()
       cy.wait('@mockUnexpectedError')
       cy.getByTestId('error').should('contain.text', 'Algo de errado aconteceu. Tente novamente mais tarde')
+    })
+
+    it('should logout on AccessDiniedError', () => {
+      mockAccessDiniedError()
+      cy.get('li:nth-child(2)').click()
+      Helper.testUrl('/login')
     })
   })
 })
