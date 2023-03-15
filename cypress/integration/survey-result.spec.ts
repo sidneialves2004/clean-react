@@ -17,7 +17,7 @@ const surveyList = [{
   id: '2'
 }]
 
-const surveyResult = {
+const loadSurveyResult = {
   question: 'Question 1',
   date: new Date('2018-02-03T00:00:00'),
   answers: [{
@@ -34,7 +34,24 @@ const surveyResult = {
   }]
 }
 
-const mockLoadSuccessResult = (): void => Http.mockOk(pathSurveyResult, 'GET', surveyResult, 'mockOk', 1000)
+const saveSurveyResult = {
+  question: 'Question 1',
+  date: new Date('2018-02-03T00:00:00'),
+  answers: [{
+    image: 'any_image',
+    answer: 'any_answer',
+    count: 2,
+    percent: 50,
+    isCurrentAccountAnswer: false
+  },{
+    answer: 'any_answer2',
+    count: 2,
+    percent: 50,
+    isCurrentAccountAnswer: true
+  }]
+}
+
+const mockLoadSuccessResult = (): void => Http.mockOk(pathSurveyResult, 'GET', loadSurveyResult, 'mockOk', 1000)
 const mockSuccessList = (): void => Http.mockOk(pathSurveyList, 'GET', surveyList, 'mockOkList', 1000)
 
 describe('SurveyResult', () => {
@@ -71,24 +88,25 @@ describe('SurveyResult', () => {
     it('should present survey items', () => {
       mockLoadSuccessResult()
       cy.visit('/surveys/any_id')
-      cy.getByTestId('question').should('have.text', surveyResult.question)
-      cy.getByTestId('day').should('have.text', surveyResult.date.getDate().toString().padStart(2,'0'))
-      cy.getByTestId('month').should('have.text', surveyResult.date.toLocaleString('pt-BR', { month: 'short' }).replace('.',''))
-      cy.getByTestId('year').should('have.text', surveyResult.date.getFullYear())
+      cy.wait('@mockOk')
+      cy.getByTestId('question').should('have.text', loadSurveyResult.question)
+      cy.getByTestId('day').should('have.text', loadSurveyResult.date.getDate().toString().padStart(2,'0'))
+      cy.getByTestId('month').should('have.text', loadSurveyResult.date.toLocaleString('pt-BR', { month: 'short' }).replace('.',''))
+      cy.getByTestId('year').should('have.text', loadSurveyResult.date.getFullYear())
 
       cy.get('li:nth-child(1)').then(li => {
-        assert.equal(li.find('[data-testid="answer"]').text(), surveyResult.answers[0].answer)
-        assert.equal(li.find('[data-testid="image"]').attr('src'), surveyResult.answers[0].image)
-        assert.equal(li.find('[data-testid="percent"]').text(), `${surveyResult.answers[0].percent}%`)
-        if (surveyResult.answers[0].isCurrentAccountAnswer) assert.notEqual(li.css('box-shadow'), 'none')
+        assert.equal(li.find('[data-testid="answer"]').text(), loadSurveyResult.answers[0].answer)
+        assert.equal(li.find('[data-testid="image"]').attr('src'), loadSurveyResult.answers[0].image)
+        assert.equal(li.find('[data-testid="percent"]').text(), `${loadSurveyResult.answers[0].percent}%`)
+        if (loadSurveyResult.answers[0].isCurrentAccountAnswer) assert.notEqual(li.css('box-shadow'), 'none')
         else assert.equal(li.css('box-shadow'), 'none')
       })
 
       cy.get('li:nth-child(2)').then(li => {
-        assert.equal(li.find('[data-testid="answer"]').text(), surveyResult.answers[1].answer)
-        assert.equal(li.find('[data-testid="image"]').attr('src'), surveyResult.answers[1].image)
-        assert.equal(li.find('[data-testid="percent"]').text(), `${surveyResult.answers[1].percent}%`)
-        if (surveyResult.answers[1].isCurrentAccountAnswer) assert.notEqual(li.css('box-shadow'), 'none')
+        assert.equal(li.find('[data-testid="answer"]').text(), loadSurveyResult.answers[1].answer)
+        assert.equal(li.find('[data-testid="image"]').attr('src'), loadSurveyResult.answers[1].image)
+        assert.equal(li.find('[data-testid="percent"]').text(), `${loadSurveyResult.answers[1].percent}%`)
+        if (loadSurveyResult.answers[1].isCurrentAccountAnswer) assert.equal(li.css('box-shadow'), 'none')
         else assert.equal(li.css('box-shadow'), 'none')
       })
     })
@@ -107,6 +125,7 @@ describe('SurveyResult', () => {
   describe('Save',() => {
     const mockUnexpectedError = (): void => Http.mockServerError(pathSurveyResult,'PUT')
     const mockAccessDiniedError = (): void => Http.mockForbiddenError(pathSurveyResult, 'PUT')
+    const mockSaveSuccessResult = (): void => Http.mockOk(pathSurveyResult, 'PUT', saveSurveyResult, 'mockOk', 1000)
 
     beforeEach(() => {
       Helper.setLocalStorageItem('account', { accessToken: faker.datatype.uuid(), name: faker.name.findName() })
@@ -126,6 +145,32 @@ describe('SurveyResult', () => {
       mockAccessDiniedError()
       cy.get('li:nth-child(2)').click()
       Helper.testUrl('/login')
+    })
+
+    it('should present survey items', () => {
+      mockSaveSuccessResult()
+      cy.get('li:nth-child(2)').click()
+      cy.wait('@mockOk')
+      cy.getByTestId('question').should('have.text', saveSurveyResult.question)
+      cy.getByTestId('day').should('have.text', saveSurveyResult.date.getDate().toString().padStart(2,'0'))
+      cy.getByTestId('month').should('have.text', saveSurveyResult.date.toLocaleString('pt-BR', { month: 'short' }).replace('.',''))
+      cy.getByTestId('year').should('have.text', saveSurveyResult.date.getFullYear())
+
+      cy.get('li:nth-child(1)').then(li => {
+        assert.equal(li.find('[data-testid="answer"]').text(), saveSurveyResult.answers[0].answer)
+        assert.equal(li.find('[data-testid="image"]').attr('src'), saveSurveyResult.answers[0].image)
+        assert.equal(li.find('[data-testid="percent"]').text(), `${saveSurveyResult.answers[0].percent}%`)
+        if (saveSurveyResult.answers[0].isCurrentAccountAnswer) assert.equal(li.css('box-shadow'), 'none')
+        else assert.equal(li.css('box-shadow'), 'none')
+      })
+
+      cy.get('li:nth-child(2)').then(li => {
+        assert.equal(li.find('[data-testid="answer"]').text(), saveSurveyResult.answers[1].answer)
+        assert.equal(li.find('[data-testid="image"]').attr('src'), saveSurveyResult.answers[1].image)
+        assert.equal(li.find('[data-testid="percent"]').text(), `${saveSurveyResult.answers[1].percent}%`)
+        if (saveSurveyResult.answers[1].isCurrentAccountAnswer) assert.notEqual(li.css('box-shadow'), 'none')
+        else assert.equal(li.css('box-shadow'), 'none')
+      })
     })
   })
 })
